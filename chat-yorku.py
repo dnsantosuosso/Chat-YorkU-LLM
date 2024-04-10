@@ -9,6 +9,7 @@ print("Loading AutoModelForCausalLM...")
 peft_model_id = "data/zephyr-7b-sft-lora"
 model = AutoModelForCausalLM.from_pretrained(peft_model_id)
 
+# Assuming you don't have a CUDA GPU or you're running this on a machine without CUDA.
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 model.to(device)
 
