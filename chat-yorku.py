@@ -7,19 +7,10 @@ tokenizer = AutoTokenizer.from_pretrained(model_path)
 print("Loading AutoModelForCausalLM...")
 
 peft_model_id = "data/zephyr-7b-sft-lora"
+# Load the model with automatic device mapping and 4-bit precision
 model = AutoModelForCausalLM.from_pretrained(peft_model_id, load_in_4bit=True, device_map="auto")
 
-print("Trying to allocate model to GPU...")
-try:
-    device = torch.device("cuda")
-    model.to(device).half()
-    print("Model moved to GPU.")
-except RuntimeError as e:
-    print(f"Failed to move model to GPU: {e}")
-
-# Assuming you don't have a CUDA GPU or you're running this on a machine without CUDA.
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-model.to(device).half()  # Convert to half precision
+print("Model is ready for inference.")
 
 def generate_response(question):
     # Disable gradient calculation
@@ -33,7 +24,8 @@ def generate_response(question):
         {"role": "user", "content": question},
     ]
 
-    input_ids = tokenizer.apply_chat_template(messages, truncation=True, add_generation_prompt=True, return_tensors="pt").to(device)
+    # Since the model is already on the correct device, use it directly
+    input_ids = tokenizer.apply_chat_template(messages, truncation=True, add_generation_prompt=True, return_tensors="pt")
 
     outputs = model.generate(
         input_ids=input_ids,
