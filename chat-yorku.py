@@ -1,27 +1,20 @@
-from transformers import AutoModelForCausalLM, AutoTokenizer
 import torch
+from transformers import AutoModelForCausalLM, AutoTokenizer
 
 model_path = "data/zephyr-7b-sft-lora"
-
 tokenizer = AutoTokenizer.from_pretrained(model_path)
 print("Loading AutoModelForCausalLM...")
 
-peft_model_id = "data/zephyr-7b-sft-lora"
-model = AutoModelForCausalLM.from_pretrained(peft_model_id)
-
-# Assuming you don't have a CUDA GPU or you're running this on a machine without CUDA.
+model = AutoModelForCausalLM.from_pretrained(model_path)
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-model.to(device)
+model.to(device).half()  # Convert to half precision
 
 def generate_response(question):
+    torch.cuda.empty_cache()  # Clear unused memory
     messages = [
-        {
-            "role": "system",
-            "content": "You are a friendly chatbot who is an expert in content about York University",
-        },
+        {"role": "system", "content": "You are a friendly chatbot who is an expert in content about York University"},
         {"role": "user", "content": question},
     ]
-
     input_ids = tokenizer.apply_chat_template(messages, truncation=True, add_generation_prompt=True, return_tensors="pt").to(device)
 
     with torch.no_grad():
