@@ -9,6 +9,19 @@ print("Loading AutoModelForCausalLM...")
 peft_model_id = "data/zephyr-7b-sft-lora"
 model = AutoModelForCausalLM.from_pretrained(peft_model_id)
 
+model = AutoModelForCausalLM.from_pretrained(peft_model_id)
+model.to('cpu')  # Keep model on CPU initially for troubleshooting
+print("Model loaded successfully on CPU.")
+
+# When ready, attempt to move to GPU
+try:
+    device = torch.device("cuda")
+    model.to(device).half()
+    print("Model moved to GPU.")
+except RuntimeError as e:
+    print(f"Failed to move model to GPU: {e}")
+
+
 # Assuming you don't have a CUDA GPU or you're running this on a machine without CUDA.
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 model.to(device).half()  # Convert to half precision
