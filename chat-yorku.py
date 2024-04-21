@@ -9,7 +9,6 @@ print("Loading AutoModelForCausalLM...")
 peft_model_id = "data/zephyr-7b-sft-lora"
 model = AutoModelForCausalLM.from_pretrained(peft_model_id)
 
-model = AutoModelForCausalLM.from_pretrained(peft_model_id)
 model.to('cpu')  # Keep model on CPU initially for troubleshooting
 print("Model loaded successfully on CPU.")
 
