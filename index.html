@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatbot UI</title>
+</head>
+<body>
+    <h1>Chatbot Interface</h1>
+    <input type="text" id="questionInput" placeholder="Ask a question...">
+    <button onclick="sendQuestion()">Ask</button>
+    <h2>Answer:</h2>
+    <div id="answerOutput"></div>
+
+    <script>
+        function sendQuestion() {
+            var question = document.getElementById('questionInput').value;
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "http://206.12.88.44:5000/Answer", true);
+            xhr.setRequestHeader("Content-Type", "application/json");
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    var response = JSON.parse(xhr.responseText);
+                    var answerText = response.answer.split('\n').filter(part => part.trim() !== '').slice(2).join('\n');
+                    document.getElementById('answerOutput').textContent = answerText;
+                }
+            };
+            var data = JSON.stringify({"question": question});
+            xhr.send(data);
+        }
+    </script>
+</body>
+</html>
