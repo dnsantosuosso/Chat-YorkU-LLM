@@ -5,7 +5,7 @@ import {
   Button,
   Typography,
   Stack,
-  CircularProgress,
+  // CircularProgress,
 } from '@mui/material';
 import axios from 'axios';
 
@@ -14,7 +14,7 @@ const Chat = () => {
     message: '',
   });
   const [messages, setMessages] = useState([]);
-  const [loading, setLoading] = useState(true);
+  // const [loading, setLoading] = useState(true);
   const messagesEndRef = useRef(null);
 
   const sendMsg = async () => {
@@ -53,10 +53,6 @@ const Chat = () => {
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  };
-
-  const convertTimestamp = (nanoseconds) => {
-    return new Date(nanoseconds / 1000000);
   };
 
   const handleChange = (e) => {
